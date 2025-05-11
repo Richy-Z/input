@@ -7,6 +7,14 @@ local bit = require("bit")
 local bor = bit.bor
 local lshift = bit.lshift
 
+--[[
+https://developer.apple.com/documentation/coregraphics?language=objc
+https://developer.apple.com/documentation/coregraphics/quartz-event-services?language=objc
+https://developer.apple.com/documentation/corefoundation?language=objc
+https://developer.apple.com/documentation/corefoundation/cfrunloop?language=objc
+https://developer.apple.com/documentation/corefoundation/cfstring?language=objc
+]]
+
 ffi.cdef [[
     typedef void* CFRunLoopRef;
     typedef void* CGEventRef;
