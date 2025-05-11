@@ -26,9 +26,11 @@ jobs:
         env:
           LIT_PRIVATE_KEY: ${{ secrets.LIT_PRIVATE_KEY }}
 
-      #   - name: Authenticate Lit
-      #     run: |
-      #       lit auth ${{ secrets.LIT_USERNAME }}
+      - name: Authenticate Lit
+        run: |
+          lit auth Richy-Z
+        # run: |
+        #   lit auth ${{ secrets.LIT_USERNAME }}
 
       - name: Add and Publish to Lit
         run: |
