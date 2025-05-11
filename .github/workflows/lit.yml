@@ -9,28 +9,56 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install Luvit
+      - name: Install Dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y curl
+          sudo apt update
+          sudo apt install -y curl
+          sudo apt install -y openssl
+
+      - name: Set up lit, luvi, luvit
+        run: |
           curl -L https://github.com/luvit/lit/raw/master/get-lit.sh | sh
           sudo mv lit /usr/local/bin/
           sudo mv luvi /usr/local/bin/
           sudo mv luvit /usr/local/bin/
 
-      - name: Setup Lit Private Key
+      - name: Set up private key for Lit
+        env:
+          LIT_PRIVATE_KEY: ${{ secrets.LIT_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh
           echo "$LIT_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-        env:
-          LIT_PRIVATE_KEY: ${{ secrets.LIT_PRIVATE_KEY }}
+
+      - name: Read package information
+        id: package-info
+        run: |
+          script='
+          local package_path = "package.lua"
+
+          local package = dofile(package_path)
+
+          if not package then
+              error("Failed to load package.lua")
+          end
+
+          local username = package.name:match("^[^/]+")
+          local authorName = package.author and package.author.name
+          local authorEmail = package.author and package.author.email or (username .. "@users.noreply.github.com")
+
+          local script = [[
+          echo "username=]] .. username .. [[" >> $GITHUB_OUTPUT
+          echo "name=]] .. authorName .. [[" >> $GITHUB_OUTPUT
+          echo "email=]] .. authorEmail .. [[" >> $GITHUB_OUTPUT
+          ]]
+
+          os.execute(script)
+          '
+          ./luvit -e "$script"
 
       - name: Authenticate Lit
         run: |
-          lit auth Richy-Z
-        # run: |
-        #   lit auth ${{ secrets.LIT_USERNAME }}
+          lit auth "${{ steps.package-info.outputs.username }}" "${{ steps.package-info.outputs.name }}" "${{ steps.package-info.outputs.email }}"
 
       - name: Add and Publish to Lit
         run: |
