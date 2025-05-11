@@ -15,7 +15,6 @@ return {
         "!examples*",
         "!tests*",
         "!.vscode*",
-        "!.github",
-        "!example.lua"
+        "!.github"
     }
 }

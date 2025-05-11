@@ -106,8 +106,10 @@ local function init(self)
         if type == EVENT_TYPE.MOUSE_MOVED then
             self:emit("mouse_move", x, y)
         elseif type == EVENT_TYPE.MOUSE_DOWN then
+            self._mouseStates[side] = true
             self:emit("mouse_down", side, x, y)
         elseif type == EVENT_TYPE.MOUSE_UP then
+            self._mouseStates[side] = nil
             self:emit("mouse_up", side, x, y)
         elseif type == EVENT_TYPE.MOUSE_DRAGGED then
             self:emit("mouse_drag", side, x, y)

@@ -1,4 +1,4 @@
-local input = require("./init.lua") -- require("input")
+local input = require("../init.lua") -- require("input")
 
 -- input:on("mouse_down", function(side, x, y)
 --     p(side, x, y)
