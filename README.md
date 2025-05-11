@@ -60,13 +60,13 @@ input:run()
 > Using the platform-specific enumeration, you can call your enum with the raw keycode to get a human-readable string:
 >
 > ```lua
-> print(k(126)) -- "UP_ARROW"
+> print(k(126)) -- "ARROW_UP"
 > ```
 >
 > Likewise, you can also index the enumeration with your human-readable key to get back the raw keycode:
 >
 > ```lua
-> print(k.UP_ARROW) -- 125
+> print(k.ARROW_UP) -- 125
 > ```
 
 Here’s a properly structured **Keycodes** section explaining all of this clearly and formally, while keeping it approachable:
@@ -84,8 +84,8 @@ For now, keycode enumerations are static and must be accessed through the platfo
 
 ```lua
 local k = input.enums.macOS
-print(k(126))      -- "UP_ARROW"
-print(k.UP_ARROW)  -- 126
+print(k(126))      -- "ARROW_UP"
+print(k.ARROW_UP)  -- 126
 ```
 
 ### Unified/Dynamic keycodes in the future

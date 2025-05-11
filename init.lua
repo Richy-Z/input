@@ -12,11 +12,15 @@ local backend
 local function checkInit(self)
     if self._initialized then return end
 
-    if jit.os == "OSX" then
+    local os = jit.os
+
+    if os == "OSX" then
         backend = require("macOS/backend")
         backend.init(self)
-    elseif jit.os == 'Windows' then
+    elseif os == 'Windows' then
         error("Sorry, Windows is not supported yet! It is coming soon.")
+    else
+        error("Sorry, " .. os .. " is not supported yet. It will hopefully come soon.")
     end
 
     self._initialized = true
