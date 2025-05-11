@@ -1,0 +1,5 @@
+deps
+
+# macOS files
+*._**
+**.DS_Store

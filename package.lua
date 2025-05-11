@@ -9,6 +9,8 @@ return {
     dependencies = {},
     files = {
         "**.lua",
-        "!test*"
+        "!examples*",
+        "!tests*",
+        "!.vscode*"
     }
 }
