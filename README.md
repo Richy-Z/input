@@ -1,5 +1,7 @@
 # ⌨️ `Richy-Z/input`
 
+[![Publish to Lit](https://github.com/Richy-Z/input/actions/workflows/lit.yml/badge.svg)](https://github.com/Richy-Z/input/actions/workflows/lit.yml)
+
 Native input event handling for Luvit. Supports keyboard events on macOS using low-level system APIs.
 
 Cross-platform support and mouse events coming soon.
