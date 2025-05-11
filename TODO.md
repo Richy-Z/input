@@ -8,3 +8,6 @@
   - each keycode is merged into one big thing but just for the LSP
   - all values will be `-1`
   - Comments saying "Supported: macOS, Linux, Windows"
+  - test right click event on macos
+  - normalise scroll values across all platforms
+  - figure out what to normalise macos values to (or literally what we will be normalising to)
