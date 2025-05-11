@@ -54,7 +54,7 @@ jobs:
 
           os.execute(script)
           '
-          ./luvit -e "$script"
+          luvit -e "$script"
 
       - name: Authenticate Lit
         run: |
