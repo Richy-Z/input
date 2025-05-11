@@ -1,6 +1,8 @@
 local ffi = require("ffi")
 local C = ffi.C
 
+local uv = require("uv")
+
 local bit = require("bit")
 local bor = bit.bor
 local lshift = bit.lshift
@@ -20,6 +22,8 @@ ffi.cdef [[
     CFRunLoopRef CFRunLoopGetCurrent(void);
     void CFRunLoopRun(void);
     void CFRunLoopStop(CFRunLoopRef rl);
+
+    double CFRunLoopRunInMode(const void* mode, double seconds, bool returnAfterSourceHandled);
 
     void* CGEventTapCreate(
         int tap,
@@ -64,6 +68,8 @@ ffi.cdef [[
 
     CGPoint CGEventGetLocation(CGEventRef event);
     // double CGEventGetDoubleValueField(CGEventRef event, int field); // used for ultra precise mouse readings
+
+    extern const void* kCFRunLoopDefaultMode;
 ]]
 
 local core = ffi.load("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")
@@ -76,22 +82,21 @@ local button_map = {
 }
 
 local function init(self)
-    local states = {}
     local function event(proxy, type, ref, userData)
         local keycode = tonumber(ffi.cast("uintptr_t", C.CGEventGetIntegerValueField(ref, 9))) -- 9 = kCGKeyboardEventKeycode
         -- if not keycode then return end
 
         if type == EVENT_TYPE.KEY_DOWN then
-            if not states[keycode] then
+            if not self._states[keycode] then
                 ---@diagnostic disable-next-line: need-check-nil
-                states[keycode] = true
+                self._states[keycode] = true
 
                 self:emit("key_press", keycode)
             end
         elseif type == EVENT_TYPE.KEY_UP then
-            if states[keycode] then
+            if self._states[keycode] then
                 ---@diagnostic disable-next-line: need-check-nil
-                states[keycode] = nil
+                self._states[keycode] = nil
 
                 self:emit("key_release", keycode)
             end
@@ -101,6 +106,11 @@ local function init(self)
         local location = core.CGEventGetLocation(ref)
         local x = location.x
         local y = location.y
+
+        if x == nil or y == nil then return ref end
+
+        self._last_mouseX = x
+        self._last_mouseY = y
 
         local side = button_map[mouse_button] or "unknown"
 
@@ -166,7 +176,28 @@ local function init(self)
     core.CFRunLoopAddSource(core.CFRunLoopGetCurrent(), source, C.kCFRunLoopCommonModes)
 end
 
+local timer
+local function runLoop()
+    if timer then return end
+
+    local interval_ms = 10
+    timer = uv.new_timer()
+
+    timer:start(0, interval_ms, function()
+        core.CFRunLoopRunInMode(C.kCFRunLoopDefaultMode, interval_ms / 1000, false)
+    end)
+end
+
+local function stopLoop()
+    if timer then
+        timer:stop()
+        timer:close()
+        timer = nil
+    end
+end
+
 return {
     init = init,
-    runLoop = core.CFRunLoopRun
+    runLoop = runLoop,
+    stopLoop = stopLoop
 }
