@@ -1,0 +1,14 @@
+{
+  "[lua]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true
+  },
+  "Lua.runtime.version": "LuaJIT",
+
+  "editor.indentSize": "tabSize",
+  "editor.autoIndent": "full",
+  "editor.tabSize": 4,
+  "editor.detectIndentation": false,
+
+  "todo-tree.regex.regex": "--\\[\\[[\\s|\\n|\\r]*($TAGS)[\\s|\\n|\\r]*\\]\\]|--\\s*($TAGS)"
+}
